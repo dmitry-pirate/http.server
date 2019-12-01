@@ -1,8 +1,8 @@
 package server
 
 import (
-	"log"
-	"net/http"
+	"vpn_api/app/config"
+	"vpn_api/app/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -10,15 +10,15 @@ import (
 
 //APIServer type
 type APIServer struct {
-	config *Config
+	config *config.Config
 	logger *logrus.Logger
 	router *gin.Engine
 }
 
 //New create new APIServer instance
-func New(config *Config) *APIServer {
+func New() *APIServer {
 	return &APIServer{
-		config: config,
+		config: config.NewConfig(),
 		logger: logrus.New(),
 		router: gin.Default(),
 	}
@@ -30,7 +30,7 @@ func (s *APIServer) Start() error {
 		return err
 	}
 	s.configureRouter()
-	return s.router.Run(s.config.server.BindAddr)
+	return s.router.Run(s.config.Server.BindAddr)
 }
 
 //GetRouter - configure router and return gin engine pointer
@@ -40,9 +40,9 @@ func (s *APIServer) GetRouter() *gin.Engine {
 }
 
 func (s *APIServer) configureLogger() error {
-	level, err := logrus.ParseLevel(s.config.server.LogLevel)
+	level, err := logrus.ParseLevel(s.config.Server.LogLevel)
 	if err != nil {
-		log.Fatal(err)
+		s.logger.Fatal(err)
 	}
 
 	s.logger.SetLevel(level)
@@ -52,19 +52,7 @@ func (s *APIServer) configureLogger() error {
 func (s *APIServer) configureRouter() {
 	v1 := s.router.Group("/")
 	{
-		v1.POST("/pac", s.handlePac())
-		v1.POST("/ping", s.handlePing())
-	}
-}
-
-func (s *APIServer) handlePac() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"mode": "vpn"})
-	}
-}
-
-func (s *APIServer) handlePing() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"mode": "vpn"})
+		v1.POST("/pac", controllers.HandlePac())
+		v1.POST("/ping", controllers.HandlePing())
 	}
 }

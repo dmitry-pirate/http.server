@@ -14,8 +14,7 @@ func init() {
 }
 
 func main() {
-	config := server.NewConfig()
-	s := server.New(config)
+	s := server.New()
 	if err := s.Start(); err != nil {
 		log.Fatal(err)
 	}

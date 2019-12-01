@@ -19,7 +19,7 @@ func performRequest(r http.Handler, method, path string) *httptest.ResponseRecor
 }
 
 func TestApiServer_HandlePac(t *testing.T) {
-	s := server.New(server.NewConfig())
+	s := server.New()
 	body := gin.H{
 		"mode": "vpn",
 	}
@@ -36,7 +36,7 @@ func TestApiServer_HandlePac(t *testing.T) {
 }
 
 func TestApiServer_HandlePing(t *testing.T) {
-	s := server.New(server.NewConfig())
+	s := server.New()
 	body := gin.H{
 		"mode": "vpn",
 	}

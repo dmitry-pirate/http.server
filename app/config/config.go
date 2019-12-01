@@ -1,11 +1,11 @@
-package server
+package config
 
 import "os"
 
 // Config type
 type Config struct {
-	db     *Database
-	server *Server
+	DB     *Database
+	Server *Server
 }
 
 //Database config
@@ -24,12 +24,12 @@ type Server struct {
 //NewConfig create a new config instance
 func NewConfig() *Config {
 	return &Config{
-		db: &Database{
+		DB: &Database{
 			DBName:     getEnv("DB_NAME", "homestage"),
 			DBUser:     getEnv("DB_USER", "homestage"),
 			DBPassword: getEnv("DB_PASS", "homestage"),
 		},
-		server: &Server{
+		Server: &Server{
 			BindAddr: getEnv("BIND_ADDR", "homestage"),
 			LogLevel: getEnv("LOG_LEVEL", "homestage"),
 		},
