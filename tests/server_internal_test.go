@@ -2,13 +2,12 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"vpn_api/app/server"
-
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 )
 
 func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {

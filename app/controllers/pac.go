@@ -1,14 +1,40 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"vpn_api/app/config"
+	"vpn_api/app/models"
+	"vpn_api/app/requests"
+	"vpn_api/app/store"
 )
 
 //HandlePac ...
 func HandlePac() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"mode": "vpn"})
+		request := new(requests.PacRequest)
+		if err := c.Bind(request); err != nil {
+			panic(err)
+		}
+		conf := config.NewConfig()
+		s, err := store.New(conf)
+		if err != nil {
+			panic(err)
+		}
+		defer func() {
+			if err := s.Close(); err != nil {
+				panic(err)
+			}
+		}()
+		var country models.Countries
+		if err := s.GetConnection().Get(&country, "select * from countries where country_code = ? limit 1", request.Country); err != nil {
+			panic(err)
+		}
+		var proxies models.Proxies
+		if err := s.GetConnection().Get(&proxies, "select * from proxies where country_id = ? and premium = ? limit 1", country.Id, 1); err != nil {
+			panic(err)
+		}
+		res := models.PrepareProxiesPacResults(s, &proxies, &country)
+		c.JSON(http.StatusOK, gin.H{"mode": "vpn", "servers": res})
 	}
 }
