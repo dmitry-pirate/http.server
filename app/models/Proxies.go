@@ -67,15 +67,6 @@ type ProxyNode struct {
 //Store proxies pac results to used response format
 func PrepareProxiesPacResults(store *store.Store, proxy *Proxies, country *Countries) ProxiesJson {
 	var nodes []ProxyNode
-	nodes = append(nodes, ProxyNode{
-		Ip:               proxy.Ip,
-		Path:             proxy.Endpoint,
-		Port:             proxy.Port,
-		OvpnPort:         proxy.OvpnPort,
-		Schema:           proxy.Schema,
-		Psk:              proxy.Psk.String,
-		RemoteIdentifier: proxy.RemoteIdentifier.String,
-	})
 	return ProxiesJson{
 		CountryCode:    country.CountryCode,
 		CountryName:    country.Name,
@@ -84,12 +75,16 @@ func PrepareProxiesPacResults(store *store.Store, proxy *Proxies, country *Count
 		Mode:           proxy.Premium,
 		Streaming:      proxy.Streaming,
 		Lock:           false,
-		Icon: ProxyIcon{
-			X1: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + ".png",
-			X2: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@2x.png",
-			X3: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@3x.png",
-		},
-		Nodes: nodes,
+		Icon:           prepareImagesStruct(store, country),
+		Nodes: append(nodes, ProxyNode{
+			Ip:               proxy.Ip,
+			Path:             proxy.Endpoint,
+			Port:             proxy.Port,
+			OvpnPort:         proxy.OvpnPort,
+			Schema:           proxy.Schema,
+			Psk:              proxy.Psk.String,
+			RemoteIdentifier: proxy.RemoteIdentifier.String,
+		}),
 	}
 }
 
@@ -100,7 +95,7 @@ func PrepareProxiesPingResults(store *store.Store, proxies *[]Proxies) []Proxies
 		var country Countries
 		err := store.GetConnection().Get(&country, "select * from countries where id = ? limit 1", proxy.CountryId)
 		if err != nil {
-			panic(err)
+			return proxiesJson
 		}
 		var nodes []ProxyNode
 		proxiesJson = append(proxiesJson, ProxiesJson{
@@ -111,13 +106,18 @@ func PrepareProxiesPingResults(store *store.Store, proxies *[]Proxies) []Proxies
 			Mode:           proxy.Premium,
 			Streaming:      proxy.Streaming,
 			Lock:           false,
-			Icon: ProxyIcon{
-				X1: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + ".png",
-				X2: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@2x.png",
-				X3: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@3x.png",
-			},
-			Nodes: nodes,
+			Icon:           prepareImagesStruct(store, &country),
+			Nodes:          nodes,
 		})
 	}
 	return proxiesJson
+}
+
+//Get images list for proxy servers
+func prepareImagesStruct(store *store.Store, country *Countries) ProxyIcon {
+	return ProxyIcon{
+		X1: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + ".png",
+		X2: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@2x.png",
+		X3: store.GetConfig().Site.ManageUrl + "/images/flags/" + country.CountryCode + ".imageset/" + country.CountryCode + "@3x.png",
+	}
 }

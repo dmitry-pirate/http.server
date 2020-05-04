@@ -1,11 +1,11 @@
 package server
 
 import (
-	"vpn_api/app/config"
-	"vpn_api/app/controllers"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"vpn_api/app/config"
+	"vpn_api/app/controllers"
+	"vpn_api/app/middleware"
 )
 
 //APIServer type
@@ -39,6 +39,10 @@ func (s *APIServer) GetRouter() *gin.Engine {
 	return s.router
 }
 
+func (s *APIServer) GetLogger() *logrus.Logger {
+	return s.logger
+}
+
 func (s *APIServer) configureLogger() error {
 	level, err := logrus.ParseLevel(s.config.Server.LogLevel)
 	if err != nil {
@@ -50,8 +54,9 @@ func (s *APIServer) configureLogger() error {
 }
 
 func (s *APIServer) configureRouter() {
-	v1 := s.router.Group("/")
+	v1 := s.router.Group("/api/v1/")
 	{
+		v1.Use(middleware.AuthMiddleware(s.config))
 		v1.POST("/pac", controllers.HandlePac())
 		v1.POST("/ping", controllers.HandlePing())
 	}
