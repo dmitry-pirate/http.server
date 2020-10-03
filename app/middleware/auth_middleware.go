@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/dmitry-pirate/http.server/app/repositories"
-	"github.com/dmitry-pirate/http.server/app/services/store"
+	"github.com/basketforcode/http.server/app/repositories"
+	"github.com/basketforcode/http.server/app/services/store"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

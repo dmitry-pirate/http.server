@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/dmitry-pirate/http.server/app/handlers"
-	"github.com/dmitry-pirate/http.server/app/middleware"
-	"github.com/dmitry-pirate/http.server/app/services/cache"
-	"github.com/dmitry-pirate/http.server/app/services/store"
-	"github.com/dmitry-pirate/http.server/config"
+	"github.com/basketforcode/http.server/app/handlers"
+	"github.com/basketforcode/http.server/app/middleware"
+	"github.com/basketforcode/http.server/app/services/cache"
+	"github.com/basketforcode/http.server/app/services/store"
+	"github.com/basketforcode/http.server/config"
 	"github.com/gin-gonic/gin"
 )
 

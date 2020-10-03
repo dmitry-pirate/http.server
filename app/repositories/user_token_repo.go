@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/dmitry-pirate/http.server/app/models"
-	"github.com/dmitry-pirate/http.server/app/services/store"
+	"github.com/basketforcode/http.server/app/models"
+	"github.com/basketforcode/http.server/app/services/store"
 )
 
 type userTokenRepo struct {

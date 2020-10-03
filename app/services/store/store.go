@@ -2,7 +2,7 @@ package store
 
 import (
 	"fmt"
-	"github.com/dmitry-pirate/http.server/config"
+	"github.com/basketforcode/http.server/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"math/rand"

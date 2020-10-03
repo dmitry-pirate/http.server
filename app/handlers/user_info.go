@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"github.com/dmitry-pirate/http.server/app/models"
-	"github.com/dmitry-pirate/http.server/app/repositories"
-	"github.com/dmitry-pirate/http.server/app/services/cache"
-	"github.com/dmitry-pirate/http.server/app/services/store"
-	"github.com/dmitry-pirate/http.server/config"
+	"github.com/basketforcode/http.server/app/models"
+	"github.com/basketforcode/http.server/app/repositories"
+	"github.com/basketforcode/http.server/app/services/cache"
+	"github.com/basketforcode/http.server/app/services/store"
+	"github.com/basketforcode/http.server/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"

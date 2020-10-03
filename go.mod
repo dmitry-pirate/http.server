@@ -1,4 +1,4 @@
-module github.com/dmitry-pirate/http.server
+module github.com/basketforcode/http.server
 
 go 1.13
 

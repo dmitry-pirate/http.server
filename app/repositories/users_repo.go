@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/dmitry-pirate/http.server/app/models"
-	"github.com/dmitry-pirate/http.server/app/services/store"
+	"github.com/basketforcode/http.server/app/models"
+	"github.com/basketforcode/http.server/app/services/store"
 )
 
 type usersRepo struct {
@@ -16,7 +16,7 @@ func NewUserRepo(store *store.Store) *usersRepo {
 //Return user by auth token from header
 func (rep *usersRepo) GetByID(id int) (models.Users, error) {
 	var usr models.Users
-	if err := rep.store.SlaveConnection().Get(&usr, "select * from users where id = ? limit 1", id); err != nil {
+	if err := rep.store.SlaveConnection().Get(&usr, "select id, email, name, subscription_status from users where id = ? limit 1", id); err != nil {
 		return usr, err
 	}
 	return usr, nil
@@ -31,7 +31,7 @@ func (rep *usersRepo) GetFormattedInfo(ut models.UserToken) (*models.UsersJson, 
 
 	usrJSON = models.UsersJson{
 		ID:                 usr.Id,
-		Email:              usr.Email.String,
+		Email:              usr.Email,
 		Name:               usr.Name.String,
 		SubscriptionStatus: usr.SubscriptionStatus,
 	}

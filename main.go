@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dmitry-pirate/http.server/app"
+	"github.com/basketforcode/http.server/app"
 	"github.com/joho/godotenv"
 	"log"
 )

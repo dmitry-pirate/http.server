@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/dmitry-pirate/http.server/config"
+	"github.com/basketforcode/http.server/config"
 	"github.com/go-redis/redis/v8"
 	"strconv"
 	"time"
