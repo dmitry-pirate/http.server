@@ -8,7 +8,10 @@ import (
 	"github.com/dmitry-pirate/http.server/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
+
+const infoCacheKey = "user_info:"
 
 type userHandler struct {
 	config *config.Config
@@ -34,8 +37,13 @@ func (handler *userHandler) Handle() gin.HandlerFunc {
 			return
 		}
 
-		r := repositories.NewUserRepo(handler.store)
-		usr, err := r.GetFormattedInfo(token)
+		cacheKey := infoCacheKey + token.Token
+		usr, err := handler.cache.Get(c, cacheKey)
+		if err != nil {
+			r := repositories.NewUserRepo(handler.store)
+			usr, err = r.GetFormattedInfo(token)
+			_ = handler.cache.Set(c, cacheKey, usr, time.Hour*12)
+		}
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"success": false, "msg": err.Error()})
