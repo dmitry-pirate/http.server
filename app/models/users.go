@@ -31,7 +31,6 @@ type Users struct {
 type UsersJson struct {
 	ID                 int    `json:"id"`
 	Email              string `json:"email"`
-	FirstName          string `json:"first_name"`
-	LastName           string `json:"last_name"`
+	Name               string `json:"name"`
 	SubscriptionStatus string `json:"subscription_status"`
 }

@@ -22,19 +22,18 @@ func (rep *usersRepo) GetByID(id int) (models.Users, error) {
 	return usr, nil
 }
 
-func (rep *usersRepo) GetFormattedInfo(ut models.UserToken, location string) models.UsersJson {
+func (rep *usersRepo) GetFormattedInfo(ut models.UserToken) (*models.UsersJson, error) {
 	var usrJSON models.UsersJson
 	usr, err := rep.GetByID(ut.Id)
 	if err != nil {
-		return usrJSON
+		return nil, err
 	}
 
 	usrJSON = models.UsersJson{
 		ID:                 usr.Id,
 		Email:              usr.Email.String,
-		FirstName:          usr.Name.String,
-		LastName:           "",
+		Name:               usr.Name.String,
 		SubscriptionStatus: usr.SubscriptionStatus,
 	}
-	return usrJSON
+	return &usrJSON, nil
 }

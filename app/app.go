@@ -51,7 +51,6 @@ func (a *App) configureRouter() {
 	v1 := a.router.Group("/")
 	{
 		v1.Use(middleware.AuthMiddleware(a.store))
-		v1.Use(middleware.LocalizationMiddleware())
 		v1.POST("/user/info", a.handlerInfo.Handle())
 	}
 }
