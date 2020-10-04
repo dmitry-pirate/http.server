@@ -7,7 +7,6 @@ type Config struct {
 	Redis  *Redis
 	Server *Server
 	Site   *Site
-	Logger *Logger
 }
 
 func NewConfig() *Config {
@@ -36,9 +35,6 @@ func NewConfig() *Config {
 		},
 		Site: &Site{
 			ManageUrl: getEnv("MANAGE_URL", "127.0.0.1"),
-		},
-		Logger: &Logger{
-			DSN: getEnv("SENTRY_DSN", ""),
 		},
 	}
 }

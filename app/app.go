@@ -7,6 +7,7 @@ import (
 	"github.com/basketforcode/http.server/app/services/store"
 	"github.com/basketforcode/http.server/config"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 //App main structure
@@ -52,10 +53,14 @@ func (a *App) Shutdown() error {
 		return err
 	}
 
+	log.Println("Store connection closed...")
+
 	err = a.cache.Close()
 	if err != nil {
 		return err
 	}
+
+	log.Println("Cache connection closed...")
 
 	return nil
 }
