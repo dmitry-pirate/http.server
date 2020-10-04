@@ -28,6 +28,11 @@ func New(config *config.Config) Redis {
 	}
 }
 
+//Close connection
+func (r *Redis) Close() error {
+	return r.connection.Close()
+}
+
 //set value to redis
 func (r *Redis) Set(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
 	model, err := json.Marshal(value)

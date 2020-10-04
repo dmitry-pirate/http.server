@@ -35,10 +35,29 @@ func (a *App) Start() error {
 	if err := a.configureStore(); err != nil {
 		return err
 	}
+
 	a.configureCache()
+
 	a.configureHandlers()
+
 	a.configureRouter()
+
 	return a.router.Run(a.config.Server.BindAddr)
+}
+
+//Close all connections
+func (a *App) Shutdown() error {
+	err := a.store.Close()
+	if err != nil {
+		return err
+	}
+
+	err = a.cache.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 //set handler functions
@@ -51,7 +70,7 @@ func (a *App) configureRouter() {
 	v1 := a.router.Group("/")
 	{
 		v1.Use(middleware.AuthMiddleware(a.store))
-		v1.POST("/user/info", a.handlerInfo.Handle())
+		v1.GET("/user/info", a.handlerInfo.Handle())
 	}
 }
 

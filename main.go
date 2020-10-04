@@ -17,4 +17,10 @@ func main() {
 	if err := api.Start(); err != nil {
 		panic(err)
 	}
+
+	defer func() {
+		if err := api.Shutdown(); err != nil {
+			panic(err)
+		}
+	}()
 }

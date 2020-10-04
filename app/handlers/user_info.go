@@ -29,7 +29,7 @@ func NewUserHandler(store *store.Store, cache *cache.Redis, config *config.Confi
 }
 
 //HandleInfo is http handler
-func (handler *userHandler) Handle() gin.HandlerFunc {
+func (h *userHandler) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, ok := c.Value("auth").(models.UserToken)
 		if !ok {
@@ -38,11 +38,11 @@ func (handler *userHandler) Handle() gin.HandlerFunc {
 		}
 
 		cacheKey := infoCacheKey + token.Token
-		usr, err := handler.cache.Get(c, cacheKey)
+		usr, err := h.cache.Get(c, cacheKey)
 		if err != nil {
-			r := repositories.NewUserRepo(handler.store)
+			r := repositories.NewUserRepo(h.store)
 			usr, err = r.GetFormattedInfo(token)
-			_ = handler.cache.Set(c, cacheKey, usr, time.Hour*12)
+			_ = h.cache.Set(c, cacheKey, usr, time.Hour*12)
 		}
 
 		if err != nil {
@@ -51,8 +51,8 @@ func (handler *userHandler) Handle() gin.HandlerFunc {
 		}
 
 		c.AsciiJSON(http.StatusOK, gin.H{
-			"type": "success",
-			"data": usr,
+			"success": true,
+			"data":    usr,
 		})
 	}
 }
