@@ -42,12 +42,13 @@ func (h *userHandler) Handle() gin.HandlerFunc {
 		if err != nil {
 			r := repositories.NewUserRepo(h.store)
 			usr, err = r.GetFormattedInfo(token)
-			_ = h.cache.Set(c, cacheKey, usr, time.Hour*12)
-		}
 
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"success": false, "msg": err.Error()})
-			return
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"success": false, "msg": err.Error()})
+				return
+			}
+
+			_ = h.cache.Set(c, cacheKey, usr, time.Hour*12)
 		}
 
 		c.AsciiJSON(http.StatusOK, gin.H{
