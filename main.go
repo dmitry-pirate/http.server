@@ -34,11 +34,12 @@ func main() {
 	log.Println("Shutting down server...")
 
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
 	defer cancel()
 
 	if err := api.Shutdown(); err != nil {
 		log.Fatal("Server forced to shutdown:", err)
 	}
 
-	log.Println("Server exiting")
+	log.Println("Server exiting...")
 }

@@ -19,9 +19,10 @@ func NewConfig() *Config {
 					getEnv("DB_SLAVE_HOST_2", "localhost"),
 				},
 			},
-			DBName:     getEnv("DB_NAME", "homestead"),
-			DBUser:     getEnv("DB_USER", "homestead"),
-			DBPassword: getEnv("DB_PASSWORD", "homestead"),
+			DBName:           getEnv("DB_NAME", "homestead"),
+			DBUser:           getEnv("DB_USER", "root"),
+			DBPassword:       getEnv("DB_PASSWORD", ""),
+			DBMaxConnections: getEnv("DB_MAX_CONNECTIONS", "50"),
 		},
 		Redis: &Redis{
 			DBHost:     getEnv("REDIS_HOST", "127.0.0.1"),

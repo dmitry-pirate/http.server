@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"math/rand"
+	"strconv"
 )
 
 //pool of connections to master and slave
@@ -83,5 +84,14 @@ func (s *Store) Config() *config.Config {
 //connect to host
 func (s *Store) openConnection(host string) (*sqlx.DB, error) {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", s.config.DB.DBUser, s.config.DB.DBPassword, host, s.config.DB.DBName)
-	return sqlx.Open("mysql", connectionString)
+	c, err := sqlx.Open("mysql", connectionString)
+	if err != nil {
+		return nil, err
+	}
+	maxConnections, err := strconv.Atoi(s.config.DB.DBMaxConnections)
+	if err != nil {
+		maxConnections = 50
+	}
+	c.SetMaxOpenConns(maxConnections)
+	return c, nil
 }

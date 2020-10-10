@@ -6,10 +6,11 @@ type Host struct {
 }
 
 type Database struct {
-	DBHost     Host
-	DBName     string
-	DBUser     string
-	DBPassword string
+	DBHost           Host
+	DBName           string
+	DBUser           string
+	DBPassword       string
+	DBMaxConnections string
 }
 
 type Redis struct {
