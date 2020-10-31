@@ -7,15 +7,23 @@ import (
 	"net/http"
 )
 
-func AuthMiddleware(store *store.Store) gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		s, _ := c.Value("store").(*store.Store)
+
 		token := c.GetHeader("Authorization")
-		userRepo := repositories.NewUserTokenRepo(store)
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Unauthorized"})
+		}
+
+		userRepo := repositories.NewUserTokenRepo(s)
 		userToken, err := userRepo.Get(token)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Credentials does not match"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Unauthorized"})
 		}
 		c.Set("auth", userToken)
+
 		c.Next()
 	}
 }

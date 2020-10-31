@@ -11,7 +11,7 @@ import (
 )
 
 //App main structure
-type App struct {
+type app struct {
 	config *config.Config
 	router *gin.Engine
 	store  *store.Store
@@ -22,9 +22,9 @@ type App struct {
 }
 
 //New clear app
-func New() App {
+func New() *app {
 	conf := config.NewConfig()
-	return App{
+	return &app{
 		config: conf,
 		router: gin.Default(),
 		store:  &store.Store{},
@@ -32,14 +32,12 @@ func New() App {
 }
 
 //Start server
-func (a *App) Start() error {
+func (a *app) Start() error {
 	if err := a.configureStore(); err != nil {
 		return err
 	}
 
 	a.configureCache()
-
-	a.configureHandlers()
 
 	a.configureRouter()
 
@@ -47,7 +45,7 @@ func (a *App) Start() error {
 }
 
 //Close all connections
-func (a *App) Shutdown() error {
+func (a *app) Shutdown() error {
 	err := a.store.Close()
 	if err != nil {
 		return err
@@ -65,22 +63,18 @@ func (a *App) Shutdown() error {
 	return nil
 }
 
-//set handler functions
-func (a *App) configureHandlers() {
-	a.handlerInfo = handlers.NewUserHandler(a.store, a.cache, a.config)
-}
-
 //bind router endpoints
-func (a *App) configureRouter() {
+func (a *app) configureRouter() {
 	v1 := a.router.Group("/")
 	{
-		v1.Use(middleware.AuthMiddleware(a.store))
-		v1.GET("/user/info", a.handlerInfo.Handle())
+		v1.Use(middleware.InjectMiddleware(a.store, a.cache))
+		v1.Use(middleware.AuthMiddleware())
+		v1.GET("/user/info", handlers.NewUserHandler().Handle())
 	}
 }
 
 //configure db store
-func (a *App) configureStore() error {
+func (a *app) configureStore() error {
 	st, err := store.New(a.config)
 	if err != nil {
 		return err
@@ -95,7 +89,7 @@ func (a *App) configureStore() error {
 }
 
 //connect to cache driver
-func (a *App) configureCache() {
+func (a *app) configureCache() {
 	r := cache.New(a.config)
 	a.cache = &r
 }

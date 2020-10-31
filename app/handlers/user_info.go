@@ -5,7 +5,6 @@ import (
 	"github.com/basketforcode/http.server/app/repositories"
 	"github.com/basketforcode/http.server/app/services/cache"
 	"github.com/basketforcode/http.server/app/services/store"
-	"github.com/basketforcode/http.server/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -13,24 +12,19 @@ import (
 
 const infoCacheKey = "user_info:"
 
-type userHandler struct {
-	config *config.Config
-	store  *store.Store
-	cache  *cache.Redis
-}
+type userHandler struct{}
 
 //user userHandler struct
-func NewUserHandler(store *store.Store, cache *cache.Redis, config *config.Config) *userHandler {
-	return &userHandler{
-		config: config,
-		store:  store,
-		cache:  cache,
-	}
+func NewUserHandler() *userHandler {
+	return &userHandler{}
 }
 
 //HandleInfo is http handler
 func (h *userHandler) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		s, _ := c.Value("store").(*store.Store)
+		ca, _ := c.Value("cache").(*cache.Redis)
 		token, ok := c.Value("auth").(models.UserToken)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Credentials does not match"})
@@ -38,9 +32,9 @@ func (h *userHandler) Handle() gin.HandlerFunc {
 		}
 
 		cacheKey := infoCacheKey + token.Token
-		usr, err := h.cache.Get(c, cacheKey)
+		usr, err := ca.Get(c, cacheKey)
 		if err != nil {
-			r := repositories.NewUserRepo(h.store)
+			r := repositories.NewUserRepo(s)
 			usr, err = r.GetFormattedInfo(token)
 
 			if err != nil {
@@ -48,7 +42,7 @@ func (h *userHandler) Handle() gin.HandlerFunc {
 				return
 			}
 
-			_ = h.cache.Set(c, cacheKey, usr, time.Hour*12)
+			_ = ca.Set(c, cacheKey, usr, time.Hour*12)
 		}
 
 		c.AsciiJSON(http.StatusOK, gin.H{
