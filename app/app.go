@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/basketforcode/http.server/app/handlers"
+	"github.com/basketforcode/http.server/app/internal/user"
 	"github.com/basketforcode/http.server/app/middleware"
 	"github.com/basketforcode/http.server/app/services/cache"
 	"github.com/basketforcode/http.server/app/services/store"
@@ -18,7 +18,7 @@ type App struct {
 	cache  *cache.Redis
 
 	//handlers ...
-	handlerInfo handlers.Handler
+	handlerInfo Handler
 }
 
 //New clear app
@@ -67,15 +67,15 @@ func (a *App) Shutdown() error {
 
 //set handler functions
 func (a *App) configureHandlers() {
-	a.handlerInfo = handlers.NewUserHandler(a.store, a.cache, a.config)
+	a.handlerInfo = user.NewHandler(a.store, a.cache, a.config)
 }
 
 //bind router endpoints
 func (a *App) configureRouter() {
 	v1 := a.router.Group("/")
 	{
-		v1.Use(middleware.AuthMiddleware(a.store))
-		v1.GET("/user/info", a.handlerInfo.Handle())
+		v1.Use(middleware.Auth(a.store))
+		v1.GET("/users", a.handlerInfo.Handle())
 	}
 }
 

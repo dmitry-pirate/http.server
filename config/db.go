@@ -14,8 +14,14 @@ type Database struct {
 }
 
 type Redis struct {
+	Driver string
+
 	DBHost     string
 	DBPort     string
 	DBPassword string
 	DBIndex    string
+
+	SentinelDBHosts    string
+	SentinelDBPassword string
+	SentinelDBService  string
 }

@@ -2,6 +2,11 @@ package config
 
 import "os"
 
+const (
+	CacheDriverRedis         = "redis"
+	CacheDriverRedisSentinel = "redis-sentinel"
+)
+
 type Config struct {
 	DB     *Database
 	Redis  *Redis
@@ -25,10 +30,16 @@ func NewConfig() *Config {
 			DBMaxConnections: getEnv("DB_MAX_CONNECTIONS", "50"),
 		},
 		Redis: &Redis{
+			Driver: getEnv("REDIS_DRIVER", "redis"),
+
 			DBHost:     getEnv("REDIS_HOST", "127.0.0.1"),
 			DBPort:     getEnv("REDIS_PORT", "6379"),
 			DBPassword: getEnv("REDIS_PASSWORD", ""),
 			DBIndex:    getEnv("REDIS_DB", "0"),
+
+			SentinelDBHosts:    getEnv("REDIS_SENTINEL_HOSTS", "127.0.0.1:26379"),
+			SentinelDBPassword: getEnv("REDIS_SENTINEL_PASSWORD", ""),
+			SentinelDBService:  getEnv("REDIS_SENTINEL_SERVICE", "mymaster"),
 		},
 		Server: &Server{
 			Env:      getEnv("APP_ENV", "development"),

@@ -1,35 +1,35 @@
-package repositories
+package user
 
 import (
-	"github.com/basketforcode/http.server/app/models"
+	"github.com/basketforcode/http.server/app/internal/usertoken"
 	"github.com/basketforcode/http.server/app/services/store"
 )
 
-type usersRepo struct {
+type repository struct {
 	store *store.Store
 }
 
-func NewUserRepo(store *store.Store) *usersRepo {
-	return &usersRepo{store: store}
+func NewRepo(store *store.Store) *repository {
+	return &repository{store: store}
 }
 
 //Return user by auth token from header
-func (rep *usersRepo) GetByID(id int) (models.Users, error) {
-	var usr models.Users
+func (rep *repository) FindByID(id int) (Users, error) {
+	var usr Users
 	if err := rep.store.SlaveConnection().Get(&usr, "select id, email, name, subscription_status from users where id = ? limit 1", id); err != nil {
 		return usr, err
 	}
 	return usr, nil
 }
 
-func (rep *usersRepo) GetFormattedInfo(ut models.UserToken) (*models.UsersJson, error) {
-	var usrJSON models.UsersJson
-	usr, err := rep.GetByID(ut.Id)
+func (rep *repository) FormatInfo(ut usertoken.UserToken) (*ResponseJson, error) {
+	var usrJSON ResponseJson
+	usr, err := rep.FindByID(ut.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	usrJSON = models.UsersJson{
+	usrJSON = ResponseJson{
 		ID:                 usr.Id,
 		Email:              usr.Email,
 		Name:               usr.Name.String,
