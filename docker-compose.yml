@@ -1,0 +1,30 @@
+version: '2.4'
+services:
+  app:
+    container_name: app
+    build: .
+    ports:
+      - 8080:8080
+    restart: on-failure
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:5.7.29
+    expose:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Kd98qw11#
+      MYSQL_DATABASE: storage
+
+  redis:
+    image: redis:4.0.9
+    expose:
+      - 6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 20s
+      retries: 10
