@@ -41,7 +41,9 @@ func (h *handler) Handle() gin.HandlerFunc {
 		cacheKey := fmt.Sprintf(infoCacheKey, token.Token)
 		usr, err := h.cache.Get(c, cacheKey)
 		if err != nil {
-			usr, err = NewRepo(h.store).FormatInfo(token)
+			dbc := h.store.SlaveConnection()
+
+			usr, err = NewRepo(dbc).FormatInfo(token)
 
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"success": false, "msg": err.Error()})

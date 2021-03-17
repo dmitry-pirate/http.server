@@ -2,21 +2,21 @@ package user
 
 import (
 	"github.com/basketforcode/http.server/app/internal/usertoken"
-	"github.com/basketforcode/http.server/app/services/store"
+	"github.com/jmoiron/sqlx"
 )
 
 type repository struct {
-	store *store.Store
+	db *sqlx.DB
 }
 
-func NewRepo(store *store.Store) *repository {
-	return &repository{store: store}
+func NewRepo(db *sqlx.DB) *repository {
+	return &repository{db: db}
 }
 
 //Return user by auth token from header
 func (rep *repository) FindByID(id int) (Users, error) {
 	var usr Users
-	if err := rep.store.SlaveConnection().Get(&usr, "select id, email, name, subscription_status from users where id = ? limit 1", id); err != nil {
+	if err := rep.db.Get(&usr, "select id, email, name, subscription_status from users where id = ? limit 1", id); err != nil {
 		return usr, err
 	}
 	return usr, nil
