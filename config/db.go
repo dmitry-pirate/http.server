@@ -13,8 +13,10 @@ type Database struct {
 	DBMaxConnections string
 }
 
+type RedisDriver string
+
 type Redis struct {
-	Driver string
+	Driver RedisDriver
 
 	DBHost     string
 	DBPort     string

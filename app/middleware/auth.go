@@ -10,11 +10,12 @@ import (
 func Auth(store *store.Store) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
-		userRepo := usertoken.NewRepo(store)
-		userToken, err := userRepo.Get(token)
+
+		userToken, err := usertoken.NewRepo(store).Get(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "credentials does not match"})
 		}
+
 		c.Set("auth", userToken)
 		c.Next()
 	}

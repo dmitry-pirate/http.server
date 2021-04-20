@@ -3,8 +3,8 @@ package config
 import "os"
 
 const (
-	CacheDriverRedis         = "redis"
-	CacheDriverRedisSentinel = "redis-sentinel"
+	CacheDriverRedis         RedisDriver = "redis"
+	CacheDriverRedisSentinel RedisDriver = "redis-sentinel"
 )
 
 type Config struct {
@@ -30,7 +30,7 @@ func NewConfig() *Config {
 			DBMaxConnections: getEnv("DB_MAX_CONNECTIONS", "50"),
 		},
 		Redis: &Redis{
-			Driver: getEnv("REDIS_DRIVER", "redis"),
+			Driver: RedisDriver(getEnv("REDIS_DRIVER", "redis")),
 
 			DBHost:     getEnv("REDIS_HOST", "127.0.0.1"),
 			DBPort:     getEnv("REDIS_PORT", "6379"),
