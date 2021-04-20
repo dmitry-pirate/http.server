@@ -11,7 +11,9 @@ func Auth(store *store.Store) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 
-		userToken, err := usertoken.NewRepo(store).Get(token)
+		//TODO: ??? connection must by once in context but context is bad container for db connection because anyone can change that connection
+		userToken, err := usertoken.NewRepo(store.SlaveConnection()).Get(token)
+
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "credentials does not match"})
 		}
