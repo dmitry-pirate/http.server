@@ -13,7 +13,6 @@ func NewRepo(db *sqlx.DB) *repository {
 	return &repository{db: db}
 }
 
-//Return user by auth token from header
 func (rep *repository) FindByID(id int) (Users, error) {
 	var usr Users
 	if err := rep.db.Get(&usr, "select id, email, name, subscription_status from users where id = ? limit 1", id); err != nil {

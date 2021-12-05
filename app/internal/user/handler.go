@@ -20,7 +20,6 @@ type handler struct {
 	cache  *cache.Redis
 }
 
-//New user handler struct
 func NewHandler(store *store.Store, cache *cache.Redis, config *config.Config) *handler {
 	return &handler{
 		config: config,
@@ -29,7 +28,6 @@ func NewHandler(store *store.Store, cache *cache.Redis, config *config.Config) *
 	}
 }
 
-//Handle http user info
 func (h *handler) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, ok := c.Value("auth").(usertoken.UserToken)

@@ -12,7 +12,6 @@ func NewRepo(db *sqlx.DB) *repository {
 	return &repository{db: db}
 }
 
-//Return true if auth token is exists in db
 func (rep *repository) Get(token string) (UserToken, error) {
 	var userToken UserToken
 

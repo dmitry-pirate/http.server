@@ -16,7 +16,6 @@ type Redis struct {
 	connection *redis.Client
 }
 
-//new connection to redis store
 func New(config *config.Config) Redis {
 	return Redis{
 		config:     config,
@@ -24,7 +23,6 @@ func New(config *config.Config) Redis {
 	}
 }
 
-//get client instance for redis
 func getClient(conf *config.Config) *redis.Client {
 	db, _ := strconv.Atoi(conf.Redis.DBIndex)
 
@@ -44,43 +42,41 @@ func getClient(conf *config.Config) *redis.Client {
 	})
 }
 
-//Close connection
 func (r *Redis) Close() error {
 	return r.connection.Close()
 }
 
-//Set value to redis
 func (r *Redis) Set(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
 	model, err := json.Marshal(value)
 	err = r.connection.Set(ctx, key, model, ttl).Err()
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-//Get value from redis by key string
 func (r *Redis) Get(ctx context.Context, key string) (interface{}, error) {
 	valueString, err := r.connection.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return nil, err
-	} else {
-		var model interface{}
-		err = json.Unmarshal([]byte(valueString), &model)
-		if err != nil {
-			return nil, err
-		}
-		return model, nil
 	}
+
+	var model interface{}
+
+	err = json.Unmarshal([]byte(valueString), &model)
+	if err != nil {
+		return nil, err
+	}
+
+	return model, nil
 }
 
-//Ping redis connection
 func (r *Redis) Ping(ctx context.Context) *redis.StatusCmd {
 	return r.connection.Ping(ctx)
 }
 
-//Del value by key
-func (r *Redis) Del(ctx context.Context, key string) error {
+func (r *Redis) Unlink(ctx context.Context, key string) error {
 	err := r.connection.Unlink(ctx, key).Err()
 
 	if err != nil {

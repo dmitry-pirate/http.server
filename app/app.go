@@ -10,7 +10,6 @@ import (
 	"log"
 )
 
-//App main structure
 type App struct {
 	config *config.Config
 	router *gin.Engine
@@ -21,7 +20,6 @@ type App struct {
 	handlerInfo Handler
 }
 
-//New clear app
 func New() App {
 	conf := config.NewConfig()
 	return App{
@@ -31,7 +29,6 @@ func New() App {
 	}
 }
 
-//Start server
 func (a *App) Start() error {
 	if err := a.configureStore(); err != nil {
 		return err
@@ -46,7 +43,6 @@ func (a *App) Start() error {
 	return a.router.Run(a.config.Server.BindAddr)
 }
 
-//Close all connections
 func (a *App) Shutdown() error {
 	err := a.store.Close()
 	if err != nil {
@@ -65,12 +61,10 @@ func (a *App) Shutdown() error {
 	return nil
 }
 
-//set handler functions
 func (a *App) configureHandlers() {
 	a.handlerInfo = user.NewHandler(a.store, a.cache, a.config)
 }
 
-//bind router endpoints
 func (a *App) configureRouter() {
 	v1 := a.router.Group("/")
 	{
@@ -79,7 +73,6 @@ func (a *App) configureRouter() {
 	}
 }
 
-//configure db store
 func (a *App) configureStore() error {
 	st, err := store.New(a.config)
 	if err != nil {
@@ -94,7 +87,6 @@ func (a *App) configureStore() error {
 	return nil
 }
 
-//connect to cache driver
 func (a *App) configureCache() {
 	r := cache.New(a.config)
 	a.cache = &r
