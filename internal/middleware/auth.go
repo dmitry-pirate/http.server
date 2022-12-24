@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/basketforcode/http.server/app/internal/usertoken"
-	"github.com/basketforcode/http.server/app/services/store"
+	"github.com/basketforcode/http.server/internal/usertoken"
+	"github.com/basketforcode/http.server/pkg/store"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/basketforcode/http.server/app/internal/user"
-	"github.com/basketforcode/http.server/app/middleware"
-	"github.com/basketforcode/http.server/app/services/cache"
-	"github.com/basketforcode/http.server/app/services/store"
-	"github.com/basketforcode/http.server/config"
+	"github.com/basketforcode/http.server/internal/middleware"
+	"github.com/basketforcode/http.server/internal/user"
+	"github.com/basketforcode/http.server/pkg/cache"
+	"github.com/basketforcode/http.server/pkg/config"
+	"github.com/basketforcode/http.server/pkg/store"
 	"github.com/gin-gonic/gin"
 	"log"
 )

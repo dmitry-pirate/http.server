@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/basketforcode/http.server/app/internal/usertoken"
+	"github.com/basketforcode/http.server/internal/usertoken"
 	"github.com/jmoiron/sqlx"
 )
 
